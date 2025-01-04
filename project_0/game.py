@@ -1,45 +1,52 @@
 import numpy as np
 
-def gen (len_list=1):
+
+#функция генерации массива номер от 0 до 100 в количестве=аргумент функции
+def generation_list (len_list=1000):
     return_list = []
     for i in range(len_list):
         return_list.append(np.random.randint(1,101))
         
     return return_list
 
-if __name__ == '__main__':
-    gen()
 
-        
-
-number = np.random.randint(1,101)   #загадываем число от 1 до 100
-total_count = 0                     #переменная для подсчета общего кол циклов подбора, 1 вариант подсчета
-list_count = []                     #список, где элементы это кол за циклов за каждый проход цикла игры
-#value_interation = 1
-value_interation = int(input ('Сколь раз, вы бы хотели, чтобы сыграл копмьютер сам с собой:'))
-
-for i in range (value_interation):
-    count = 0                       #подсчет за сколько проходов мы подобрали число, именно в этой интерации
+#функция поиска числа, на входе сгенирированное число
+#на выходе искомое число и количество циклов потраченное на поиск
+def find_number(random_num):
+    high = 100                  #вверхняя граница диапазона поиска
+    low =0                      #нижняя граница диапазона поиска    
+    A = (low+high)//2
+    count_find = 0
     while True:
-        searh_number = np.random.randint(1,101) #генерация числа
-        count += 1
-        if searh_number == number:              #если совпадает, то прерываем цикл
-            break                   
-    list_count.append(count)                    #список для подсчета среднего (второй вариант)
-    total_count += count                        #переменная для подсчета среднего (первый вариант)
+        count_find += 1         #один проход плюс один к счетчику
+        A = (high+low)//2       #предпологаемое число, с двумя границами поиска
+        if A > random_num:
+            high = A - 1        #если предпологаемое число больше, уменьшаем вверхнюю граница поиска
+        if A < random_num:
+            low = A + 1         #если предпологаемое число меньше, увеличиваем нижнюю границу поиска
+        if A == random_num:     #нашли, конец циклу
+            break
+        
+    return count_find
     
-
-mean_total = total_count/value_interation       #считаем по первому варианту, всего кол на кол раз игры
-mean = np.mean(list_count)                      #считаем по втрому варианту, медиана из списка
     
-print ('Первый вариант подсчета:')
-print (f'Total_count: {total_count}, Value_interation: {value_interation}')
-print (f'Всего было сыграно {value_interation} партий. Компьютер в среднем подобрал число за {(mean_total)} циклов')
+         
+total_count = 0                     #переменная для подсчета общего кол циклов подбора, 1 вариант подсчета
+random_list = generation_list()     #получаем массив сгенерированных чисел
 
-print ('Второй вариант подсчета:')
-print (f'Длина списка=кол игр: {len(list_count)}, медиана списка: {mean}')
-print (f'Всего было сыграно {value_interation} партий. Компьютер в среднем подобрал число за {(mean)} циклов')
-
+#пройдемся по нему циклом и поищем эти числа нашим алгоритмом
+for num in random_list:
+    value_find = find_number(num)
+    total_count += value_find
+        
+#найдем сколько в среднем тратится проходов на поиск нужного числа
+#для этого общее кол поисков разделим на количство "игр", или количество сгенерированных чисел
+len_random_list = len(random_list)
+mean_count = round(total_count / len_random_list)
+    
+    
+    
+print (f'Всего было сыграно {len(random_list)} партий. Компьютер в среднем подобрал число за {(mean_count)} циклов')
 
 
 
